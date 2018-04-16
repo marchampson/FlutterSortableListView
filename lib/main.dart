@@ -25,8 +25,8 @@ class MyAppState extends State<MyApp> {
           title: new Text(title),
         ),
         body: new SortableListView(
-          rows,
-          (_, int index) => new Card(
+          items: rows,
+          itemBuilder: (_, int index) => new Card(
                 child: new ListTile(
                     leading: new Icon(Icons.photo),
                     title: new Text(rows[index])),
@@ -41,7 +41,9 @@ class SortableListView extends StatefulWidget {
   final List items;
   final IndexedWidgetBuilder itemBuilder;
 
-  SortableListView(this.items, this.itemBuilder);
+  SortableListView({this.items, this.itemBuilder})
+      : assert(items != null),
+        assert(itemBuilder != null);
 
   @override
   State createState() => new SortableListViewState();
@@ -118,13 +120,13 @@ class SortableListViewState extends State<SortableListView> {
       if (index > data) {
         index--;
       }
-      String imageToMove = widget.items[data];
+      dynamic imageToMove = widget.items[data];
       widget.items.removeAt(data);
       widget.items.insert(index, imageToMove);
     });
   }
 
-  Widget _getListItem(BuildContext context, int index, [bool dragged]) {
+  Widget _getListItem(BuildContext context, int index, [bool dragged = false]) {
     // A little hack: our ListView has an extra invisible trailing item to
     // allow moving the dragged item to the last position.
     if (index == widget.items.length) {
